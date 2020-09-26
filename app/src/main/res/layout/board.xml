@@ -1,0 +1,286 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/board_dimensions"
+    android:layout_height="@dimen/board_dimensions"
+    android:background="@color/board_background"
+    tools:ignore="MissingConstraints" >
+
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare00"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare10"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare01"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare20"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare30"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare21"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare10" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare30"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:layout_marginBottom="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare31"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare20" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare01"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare11"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare02"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare00"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare11"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare21"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare12"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare10"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare01" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare21"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare31"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare22"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare20"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare11" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare31"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:layout_marginBottom="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare32"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare30"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare21" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare02"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare12"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare03"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare01"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare12"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare22"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare13"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare11"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare02" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare22"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare32"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare23"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare21"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare12" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare32"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:layout_marginBottom="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare33"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare31"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare22" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare03"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:layout_marginEnd="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare13"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare02"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare13"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:layout_marginEnd="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare23"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare12"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare03" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare23"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+
+        android:layout_marginTop="@dimen/squareMargins"
+        android:layout_marginEnd="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare33"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare22"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare13" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare33"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:layout_marginEnd="@dimen/squareMargins"
+        android:layout_marginBottom="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvSquare32"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare23" />
+
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvSquare10"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvSquare20"
+        app:layout_constraintEnd_toStartOf="@+id/tvSquare11"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSquare00" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim1"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:text="move1"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:visibility="gone"
+        android:textStyle="bold"/>
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim2"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:text="move2"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:visibility="gone"
+        android:textStyle="bold"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

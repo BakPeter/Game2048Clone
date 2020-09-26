@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#bbada0</color>
+    <color name="main_background">#fbf8ef</color>
+    <color name="board_background">#bbada0</color>
+
+    <color name="score_board_background">#bbada0</color>
+    <color name="new_game_btn_background">#907a65</color>
+
+    <color name = "empty_square_background">#ccc0b3</color>
+    <color name="_2Back">#eee4da</color>
+    <color name="_4Back">#ede0c8</color>
+    <color name="_8Back">#f2b179</color>
+    <color name="_16Back">#f59563</color>
+    <color name="_32Back">#f67c5f</color>
+    <color name="_64Back">#f65e3b</color>
+    <color name="_128Back">#edcf72</color>
+    <color name="_256Back">#edc750</color>
+    <color name="_512Back">#edc850</color>
+    <color name="_1024Back">#ecc640</color>
+    <color name="_2048Back">#edc22d</color>
+
+    <color name="_2Font">#776e65</color>
+    <color name="_4Font">#776e65</color>
+    <color name="otherFont">#f9f6f2</color>
+</resources>
