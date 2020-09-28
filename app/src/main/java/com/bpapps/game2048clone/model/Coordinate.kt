@@ -1,6 +1,6 @@
 package com.bpapps.game2048clone.model
 
-class Coordinate(var row: Int, var col: Int) {
+data class Coordinate(var row: Int = -1, var col: Int = -1) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

@@ -4,7 +4,7 @@
     android:layout_width="@dimen/board_dimensions"
     android:layout_height="@dimen/board_dimensions"
     android:background="@color/board_background"
-    tools:ignore="MissingConstraints" >
+    tools:ignore="MissingConstraints">
 
 
     <com.bpapps.game2048clone.view.Square
@@ -257,6 +257,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSquare00" />
 
+    <!--Anim layer-->
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim0"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
     <com.bpapps.game2048clone.view.Square
         android:id="@+id/tvMoveAnim1"
         android:layout_width="@dimen/square_dimensions"
@@ -264,11 +277,10 @@
         android:layout_marginStart="@dimen/squareMargins"
         android:layout_marginTop="@dimen/squareMargins"
         android:background="@color/empty_square_background"
-        android:text="move1"
         android:gravity="center"
         android:textSize="@dimen/square_text_size"
-        android:visibility="gone"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <com.bpapps.game2048clone.view.Square
         android:id="@+id/tvMoveAnim2"
@@ -277,10 +289,120 @@
         android:layout_marginStart="@dimen/squareMargins"
         android:layout_marginTop="@dimen/squareMargins"
         android:background="@color/empty_square_background"
-        android:text="move2"
         android:gravity="center"
         android:textSize="@dimen/square_text_size"
-        android:visibility="gone"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:visibility="gone" />
 
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim3"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim4"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim5"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim6"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim7"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim8"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim9"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim10"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <com.bpapps.game2048clone.view.Square
+        android:id="@+id/tvMoveAnim11"
+        android:layout_width="@dimen/square_dimensions"
+        android:layout_height="@dimen/square_dimensions"
+        android:layout_marginStart="@dimen/squareMargins"
+        android:layout_marginTop="@dimen/squareMargins"
+        android:background="@color/empty_square_background"
+        android:gravity="center"
+        android:textSize="@dimen/square_text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

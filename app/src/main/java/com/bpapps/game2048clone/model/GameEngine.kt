@@ -4,33 +4,62 @@ import android.util.Log
 
 
 class GameEngine(
-    private var bestScore: Int,
+    private var moveFinishedCallBack: IOnMoveFinished,
     private var bestScoreUpdatedCallback: IOnBestScoreUpdated?,
-    private var scoreUpdatedCallback: IOnGameScoreUpdates?,
-//    private var addedRandomSquareCallback: IOnRandomSquareAdded?,
-    private var squareMovedListener: IOnSquareMovedListener?
+    private var scoreUpdatedCallback: IOnGameScoreUpdates?
 ) {
     private val dimens = Configurations.BOARD_DIMENSIONS
 
-    private lateinit var squares: Array<Array<Int>>
+    val board: Array<Array<Square>>
 
     init {
-        startNewGame()
+//        debug
+//        board =
+//            arrayOf(
+//                arrayOf(Square(2), Square(4), Square(8), Square(16)),
+//                arrayOf(Square(16), Square(8), Square(1024), Square(2)),
+//                arrayOf(Square(8), Square(16), Square(32), Square(64)),
+//                arrayOf(Square(1), Square(1), Square(1), Square(128))
+//            )
+
+        board =
+            Array(dimens) {
+                Array(dimens) {
+                    Square(EMPTY_SQUARE)
+                }
+            }
+        addRandom()
+        addRandom()
+
+        logBoard()
     }
 
-    val boardStatus: Array<Array<Int>>
-        get() = squares
-
     private var score: Int = 0
+        set(value) {
+            field = value
+            scoreUpdatedCallback?.onScoreUpdated(score)
+            bestScore = field
+        }
+
+    var bestScore: Int = 0
+        set(value) {
+            if (value > field) {
+                field = value
+                bestScoreUpdatedCallback?.onBestScoreUpdated(bestScore)
+            }
+        }
+
+    var isVictories: Boolean = false
+
     var isGameFinished = false
 
-    private fun addRandom() {
+    private fun addRandom(): Coordinate? {
         if (!isGameFinished) {
             val emptySquaresCoordinates: ArrayList<Coordinate> = arrayListOf()
 
-            squares.forEachIndexed { row, lines ->
-                lines.forEachIndexed { col, num ->
-                    if (num == EMPTY_SQUARE) {
+            board.forEachIndexed { row, lines ->
+                lines.forEachIndexed { col, square ->
+                    if (square.num == EMPTY_SQUARE) {
                         emptySquaresCoordinates.add(Coordinate(row, col))
                     }
                 }
@@ -39,166 +68,256 @@ class GameEngine(
             if (emptySquaresCoordinates.size > 0) {
                 val value = arrayListOf(2, 4).random()
                 val coordinate = emptySquaresCoordinates.random()
-                squares[coordinate.row][coordinate.col] = value
-//                addedRandomSquareCallback?.onSquareAdded(coordinate, value)
-            }
+                board[coordinate.row][coordinate.col].num = value
 
-//            val value = if (Random.nextBoolean()) 2 else 4
-//            var ind = 0
-//            if (emptySquaresCoordinates.size > 1) {
-//                ind = Random.nextInt(0, emptySquaresCoordinates.size - 1)
-//            }
-//
-//            if (emptySquaresCoordinates.size > 0) {
-//                squares[emptySquaresCoordinates[ind].row][emptySquaresCoordinates[ind].col] = value
-//                addedRandomSquareCallback?.onSquareAdded(emptySquaresCoordinates[ind], value)
-//            }
+                return coordinate
+            }
         }
+
+        return null
     }
 
     fun startNewGame() {
-        squares = Array(dimens) {
-            Array(dimens) {
-                EMPTY_SQUARE
+        isGameFinished = false
+        board.forEach { line ->
+            line.forEach { square ->
+                square.num = EMPTY_SQUARE
             }
         }
 
-//        squares = arrayOf(
-//            arrayOf(2, 4, 8, 16),
-//            arrayOf(4, 8, 16, 32),
-//            arrayOf(8, 16, 32, 64),
-//            arrayOf(16, 32, 64, 1)
-//        )
-
         addRandom()
         addRandom()
-
-        scoreUpdatedCallback?.onScoreUpdated(0)
-        bestScoreUpdatedCallback?.onBestScoreUpdated(bestScore)
 
         logBoard()
+
+        score = 0
+        bestScore = 0
     }
 
     fun swipeUp() {
         if (!isGameFinished) {
-            var moved = false
-            var row = 0
-            while (row < dimens - 1) {
-                var col = 0
-                while (col < dimens) {
-                    if (squares[row + 1][col] != EMPTY_SQUARE) {
-                        if (squares[row][col] != EMPTY_SQUARE) {
-                            //check if to merge
-                            if (squares[row][col] == squares[row + 1][col]) {
-                                //merge
-                                squares[row][col] *= 2
-                                squares[row + 1][col] = EMPTY_SQUARE
+            val moves = arrayListOf<SquareMovement>()
+            var scoreUpdateValue = 0
 
-                                squareMovedListener?.onSquareMoved(
-                                    SquareMovement(
-                                        MoveDirection.UP,
-                                        Coordinate(row + 1, col),
-                                        Coordinate(row, col),
-                                        squares[row][col],
-                                        true
-                                    )
-                                )
+            var col = 0
+            while (col < dimens) {
 
-                                updateScore(squares[row][col])
+                var row = 1
+                while (row < dimens) {
+                    if (board[row][col].isNotEmpty()) {
 
-                                //check prev row
-                                moved = true
+                        var row1 = row - 1
+                        loop@ while (row1 >= 0) {
+                            if (board[row1][col].isNotEmpty()) {
+                                break@loop
+                            } else {
+                                row1--
                             }
+                        }
+
+                        val toCoordinate = Coordinate(-1, col)
+                        var merged = false
+                        var valueAtTheEnd = board[row][col].num
+
+                        if (row1 < 0) {
+                            //move to (0,col)
+                            moveSquare(board[row][col], board[0][col])
+                            toCoordinate.row = 0
                         } else {
-                            //merge
-                            squares[row][col] = squares[row + 1][col]
-                            squares[row + 1][col] = EMPTY_SQUARE
+                            if (board[row][col] == board[row1][col]) {
+                                //merge to (row1, col)
+                                mergeSquares(board[row][col], board[row1][col])
+                                toCoordinate.row = row1
+                                merged = true
+                                valueAtTheEnd *= 2
+                                scoreUpdateValue += valueAtTheEnd
+                            } else {
+                                //move to (row1 + 1, col)
+                                if (row != row1 + 1) {
+                                    moveSquare(board[row][col], board[row1 + 1][col])
+                                    toCoordinate.row = row1 + 1
+                                }
+                            }
+                        }
 
-                            //check prev row
-                            moved = true
-
-                            squareMovedListener?.onSquareMoved(
+                        if (row != row1 + 1 || merged) {
+                            moves.add(
                                 SquareMovement(
                                     MoveDirection.UP,
-                                    Coordinate(row + 1, col),
                                     Coordinate(row, col),
-                                    squares[row][col],
-                                    false
+                                    toCoordinate,
+                                    valueAtTheEnd,
+                                    merged
                                 )
                             )
                         }
                     }
 
-                    col++
-                }
-                //update row value
-                if (moved) {
-                    if (row == 0) {
-                        row++
-                    } else {
-                        row--
-                    }
-                } else {
                     row++
                 }
 
-                moved = false
+                col++
             }
 
-            logBoard()
-            addRandom()
-            logBoard()
-
+            val addedSquareCoordinate = addRandom()
             checkIfGameFinished()
 
+            val retVal = MoveFinishedDataHolder(moves, isGameFinished)
+            addedSquareCoordinate?.let { coordinate ->
+                retVal.addedSquareCoordinate = coordinate
+                retVal.addSquareValue =
+                    board[coordinate.row][coordinate.col].num
+            }
+
+            logChanges(retVal)
+            moveFinishedCallBack?.onMoveFinished(retVal)
+
+            if (scoreUpdateValue > 0) {
+                score += scoreUpdateValue
+            }
         }
     }
 
     fun swipeDown() {
         if (!isGameFinished) {
-            var moved = false
-            var row = dimens - 1
-            while (row > 0) {
-                var col = 0
-                while (col < dimens) {
-                    if (squares[row - 1][col] != EMPTY_SQUARE) {
-                        if (squares[row][col] != EMPTY_SQUARE) {
-                            //check if to merge
-                            if (squares[row][col] == squares[row - 1][col]) {
-                                //merge
-                                squares[row][col] *= 2
-                                squares[row - 1][col] = EMPTY_SQUARE
+            val moves = arrayListOf<SquareMovement>()
+            var scoreUpdateValue = 0
 
-                                updateScore(squares[row][col])
+            var col = 0
+            while (col < dimens) {
 
-                                //check prev row
-                                moved = true
+                var row = dimens - 2
+                while (row >= 0) {
+                    if (board[row][col].isNotEmpty()) {
 
-                                squareMovedListener?.onSquareMoved(
-                                    SquareMovement(
-                                        MoveDirection.DOWN,
-                                        Coordinate(row - 1, col),
-                                        Coordinate(row, col),
-                                        squares[row][col],
-                                        true
-                                    )
-                                )
+                        var row1 = row + 1
+                        loop@ while (row1 <= dimens - 1) {
+                            if (board[row1][col].isNotEmpty()) {
+                                break@loop
+                            } else {
+                                row1++
                             }
+                        }
+
+                        val toCoordinate = Coordinate(-1, col)
+                        var merged = false
+                        var valueAtTheEnd = board[row][col].num
+
+                        if (row1 > dimens - 1) {
+                            //move to (dimens - 1 ,col)
+                            moveSquare(board[row][col], board[dimens - 1][col])
+                            toCoordinate.row = dimens - 1
                         } else {
-                            //move
-                            squares[row][col] = squares[row - 1][col]
-                            squares[row - 1][col] = EMPTY_SQUARE
+                            if (board[row][col] == board[row1][col]) {
+                                //merge to (row1, col)
+                                mergeSquares(board[row][col], board[row1][col])
+                                toCoordinate.row = row1
+                                merged = true
+                                valueAtTheEnd *= 2
+                                scoreUpdateValue += valueAtTheEnd
+                            } else {
+                                //move to (row1 - 1, col)
+                                if (row != row1 - 1) {
+                                    moveSquare(board[row][col], board[row1 - 1][col])
+                                    toCoordinate.row = row1 - 1
+                                }
+                            }
+                        }
 
-                            //check prev row
-                            moved = true
-
-                            squareMovedListener?.onSquareMoved(
+                        if (row != row1 - 1 || merged) {
+                            moves.add(
                                 SquareMovement(
                                     MoveDirection.DOWN,
-                                    Coordinate(row - 1, col),
                                     Coordinate(row, col),
-                                    squares[row][col],
-                                    false
+                                    toCoordinate,
+                                    valueAtTheEnd,
+                                    merged
+                                )
+                            )
+                        }
+                    }
+
+                    row--
+                }
+
+                col++
+            }
+
+            val addedSquareCoordinate = addRandom()
+            checkIfGameFinished()
+
+            val retVal = MoveFinishedDataHolder(moves, isGameFinished)
+            addedSquareCoordinate?.let { coordinate ->
+                retVal.addedSquareCoordinate = coordinate
+                retVal.addSquareValue =
+                    board[coordinate.row][coordinate.col].num
+            }
+
+            logChanges(retVal)
+            moveFinishedCallBack?.onMoveFinished(retVal)
+
+
+            if (scoreUpdateValue > 0) {
+                score += scoreUpdateValue
+            }
+        }
+    }
+
+    fun swipeLeft() {
+        if (!isGameFinished) {
+            val moves = arrayListOf<SquareMovement>()
+            var scoreUpdateValue = 0
+
+            var row = 0
+            while (row < dimens) {
+
+                var col = 1
+                while (col < dimens) {
+                    if (board[row][col].isNotEmpty()) {
+
+                        var col1 = col - 1
+                        loop@ while (col1 >= 0) {
+                            if (board[row][col1].isNotEmpty()) {
+                                break@loop
+                            } else {
+                                col1--
+                            }
+                        }
+
+                        val toCoordinate = Coordinate(row, -1)
+                        var merged = false
+                        var valueAtTheEnd = board[row][col].num
+
+                        if (col1 < 0) {
+                            //move to (row, 0)
+                            moveSquare(board[row][col], board[row][0])
+                            toCoordinate.col = 0
+                        } else {
+                            if (board[row][col] == board[row][col1]) {
+                                //merge to (row, col1)
+                                mergeSquares(board[row][col], board[row][col1])
+                                toCoordinate.col = col1
+                                merged = true
+                                valueAtTheEnd *= 2
+                                scoreUpdateValue += valueAtTheEnd
+                            } else {
+                                //move to (row, col1 + 1) if not neighbors
+                                if (col != col1 + 1) {
+                                    moveSquare(board[row][col], board[row][col1 + 1])
+                                    toCoordinate.col = col1 + 1
+                                }
+
+                            }
+                        }
+
+                        if (col != col1 + 1 || merged) {
+                            moves.add(
+                                SquareMovement(
+                                    MoveDirection.LEFT,
+                                    Coordinate(row, col),
+                                    toCoordinate,
+                                    valueAtTheEnd,
+                                    merged
                                 )
                             )
                         }
@@ -206,179 +325,124 @@ class GameEngine(
 
                     col++
                 }
-                //update row value
-                if (moved) {
-                    if (row == dimens - 1) {
-                        row--
-                    } else {
-                        row++
-                    }
-                } else {
-                    row--
-                }
 
-                moved = false
+                row++
             }
 
-            logBoard()
-            addRandom()
-            logBoard()
-
+            val addedSquareCoordinate = addRandom()
             checkIfGameFinished()
+
+            val retVal = MoveFinishedDataHolder(moves, isGameFinished)
+            addedSquareCoordinate?.let { coordinate ->
+                retVal.addedSquareCoordinate = coordinate
+                retVal.addSquareValue =
+                    board[coordinate.row][coordinate.col].num
+            }
+
+            logChanges(retVal)
+            moveFinishedCallBack?.onMoveFinished(retVal)
+
+            if (scoreUpdateValue > 0) {
+                score += scoreUpdateValue
+            }
         }
     }
 
-    fun swipeLeft() {
-
+    fun swipeRight() {
         if (!isGameFinished) {
-            var moved = false
+            val moves = arrayListOf<SquareMovement>()
+            var scoreUpdateValue = 0
 
             var row = 0
             while (row < dimens) {
-                var col = 0
-                while (col < dimens - 1) {
-                    if (squares[row][col + 1] != EMPTY_SQUARE) {
-                        if (squares[row][col] != EMPTY_SQUARE) {
-                            //check if to merge
-                            if (squares[row][col] == squares[row][col + 1]) {
-                                //merge
-                                squares[row][col] *= 2
-                                squares[row][col + 1] = EMPTY_SQUARE
 
-                                updateScore(squares[row][col])
+                var col = dimens - 2
+                while (col >= 0) {
+                    if (board[row][col].isNotEmpty()) {
 
-                                //check prev row
-                                moved = true
-
-                                squareMovedListener?.onSquareMoved(
-                                    SquareMovement(
-                                        MoveDirection.DOWN,
-                                        Coordinate(row, col + 1),
-                                        Coordinate(row, col),
-                                        squares[row][col],
-                                        true
-                                    )
-                                )
+                        var col1 = col + 1
+                        loop@ while (col1 < dimens) {
+                            if (board[row][col1].isNotEmpty()) {
+                                break@loop
+                            } else {
+                                col1++
                             }
+                        }
+
+                        val toCoordinate = Coordinate(row, -1)
+                        var merged = false
+                        var valueAtTheEnd = board[row][col].num
+
+                        if (col1 > dimens - 1) {
+                            //move to (row, 0)
+                            moveSquare(board[row][col], board[row][dimens - 1])
+                            toCoordinate.col = dimens - 1
                         } else {
-                            //move
-                            squares[row][col] = squares[row][col + 1]
-                            squares[row][col + 1] = EMPTY_SQUARE
+                            if (board[row][col] == board[row][col1]) {
+                                //merge to (row, col1)
+                                mergeSquares(board[row][col], board[row][col1])
+                                toCoordinate.col = col1
+                                merged = true
+                                valueAtTheEnd *= 2
+                                scoreUpdateValue += valueAtTheEnd
+                            } else {
+                                //move to (row, col1 + 1) if not neighbors
+                                if (col != col1 - 1) {
+                                    moveSquare(board[row][col], board[row][col1 - 1])
+                                    toCoordinate.col = col1 - 1
+                                }
 
-                            //check prev row
-                            moved = true
+                            }
+                        }
 
-                            squareMovedListener?.onSquareMoved(
+                        if (col != col1 - 1 || merged) {
+                            moves.add(
                                 SquareMovement(
-                                    MoveDirection.DOWN,
-                                    Coordinate(row, col + 1),
+                                    MoveDirection.RIGHT,
                                     Coordinate(row, col),
-                                    squares[row][col],
-                                    false
+                                    toCoordinate,
+                                    valueAtTheEnd,
+                                    merged
                                 )
                             )
                         }
                     }
 
-                    //update col value
-                    if (moved) {
-                        if (col == 0) {
-                            col++
-                        } else {
-                            col--
-                        }
-                    } else {
-                        col++
-                    }
-
-                    moved = false
+                    col--
                 }
 
                 row++
             }
 
-
-            logBoard()
-            addRandom()
-            logBoard()
-
+            val addedSquareCoordinate = addRandom()
             checkIfGameFinished()
-        }
-    }
 
-
-    fun swipeRight() {
-        if (!isGameFinished) {
-            var moved = false
-            var col = dimens - 1
-            while (col > 0) {
-                var row = 0
-                while (row < dimens) {
-                    if (squares[row][col - 1] != EMPTY_SQUARE) {
-                        if (squares[row][col] != EMPTY_SQUARE) {
-                            //check if to merge
-                            if (squares[row][col] == squares[row][col - 1]) {
-                                //merge
-                                squares[row][col] *= 2
-                                squares[row][col - 1] = EMPTY_SQUARE
-
-                                updateScore(squares[row][col])
-
-                                //check prev row
-                                moved = true
-
-                                squareMovedListener?.onSquareMoved(
-                                    SquareMovement(
-                                        MoveDirection.UP,
-                                        Coordinate(row, col - 1),
-                                        Coordinate(row, col),
-                                        squares[row][col],
-                                        true
-                                    )
-                                )
-                            }
-                        } else {
-                            //move
-                            squares[row][col] = squares[row][col - 1]
-                            squares[row][col - 1] = EMPTY_SQUARE
-
-//                            //check prev row
-                            moved = true
-
-                            squareMovedListener?.onSquareMoved(
-                                SquareMovement(
-                                    MoveDirection.UP,
-                                    Coordinate(row, col - 1),
-                                    Coordinate(row, col),
-                                    squares[row][col],
-                                    false
-                                )
-                            )
-                        }
-                    }
-                    row++
-                }
-                //update col value
-                if (moved) {
-                    if (col == dimens - 1) {
-                        col--
-                    } else {
-                        col++
-                    }
-                } else {
-                    col--
-                }
-
-                moved = false
+            val retVal = MoveFinishedDataHolder(moves, isGameFinished)
+            addedSquareCoordinate?.let { coordinate ->
+                retVal.addedSquareCoordinate = coordinate
+                retVal.addSquareValue =
+                    board[coordinate.row][coordinate.col].num
             }
 
-            logBoard()
-            addRandom()
-            logBoard()
+            logChanges(retVal)
+            moveFinishedCallBack?.onMoveFinished(retVal)
 
-            checkIfGameFinished()
+            if (scoreUpdateValue > 0) {
+                score += scoreUpdateValue
+            }
         }
     }
+
+    private fun mergeSquares(from: Square, to: Square) {
+        to.num *= 2
+        from.num = EMPTY_SQUARE
+    }
+
+    private fun moveSquare(from: Square, to: Square) {
+        to.num = from.num
+        from.num = EMPTY_SQUARE
+    }
+
 
     private fun checkIfGameFinished(): Boolean {
         if (!isGameFinished) {
@@ -386,30 +450,31 @@ class GameEngine(
 
             for (i in 0 until dimens) {
                 for (j in 0 until dimens) {
-                    if (squares[i][j] == END_GAME_VALUE) {
+                    if (board[i][j].num == VICTORY_GAME_VALUE) {
                         isGameFinished = true
+                        isVictories = true
                         return isGameFinished
                     }
 
-                    if (squares[i][j] == EMPTY_SQUARE) {
-                        isGameFinished = false
-                        return isGameFinished
-                    }
-
-                    if (i > 0 && squares[i][j] == squares[i - 1][j]) {
-                        isGameFinished = false
-                        return isGameFinished
-                    }
-                    if (i < dimens - 1 && squares[i][j] == squares[i + 1][j]) {
+                    if (board[i][j].num == EMPTY_SQUARE) {
                         isGameFinished = false
                         return isGameFinished
                     }
 
-                    if (j > 0 && squares[i][j] == squares[i][j - 1]) {
+                    if (i > 0 && board[i][j] == board[i - 1][j]) {
                         isGameFinished = false
                         return isGameFinished
                     }
-                    if (j < dimens - 1 && squares[i][j] == squares[i][j + 1]) {
+                    if (i < dimens - 1 && board[i][j] == board[i + 1][j]) {
+                        isGameFinished = false
+                        return isGameFinished
+                    }
+
+                    if (j > 0 && board[i][j] == board[i][j - 1]) {
+                        isGameFinished = false
+                        return isGameFinished
+                    }
+                    if (j < dimens - 1 && board[i][j] == board[i][j + 1]) {
                         isGameFinished = false
                         return isGameFinished
                     }
@@ -417,52 +482,45 @@ class GameEngine(
             }
         }
 
-        Log.d(TAG, "is game finished = $isGameFinished")
-
         return isGameFinished
     }
 
-    private fun updateScore(value: Int) {
-        score += value
-        scoreUpdatedCallback?.onScoreUpdated(score)
-        updateBestScore()
-    }
-
-    private fun updateBestScore() {
-        if (score > bestScore) {
-            bestScore = score
-            bestScoreUpdatedCallback?.onBestScoreUpdated(bestScore)
-        }
-    }
+//    private fun updateScore(value: Int) {
+//        score += value
+//        scoreUpdatedCallback?.onScoreUpdated(score)
+//        updateBestScore()
+//    }
+//
+//    private fun updateBestScore() {
+//        if (score > bestScore) {
+//            bestScore = score
+//            bestScoreUpdatedCallback?.onBestScoreUpdated(bestScore)
+//        }
+//    }
 
     companion object {
         private const val TAG = "TAG.GameEngine"
         const val EMPTY_SQUARE = 1
-        const val END_GAME_VALUE = 2048
+        const val VICTORY_GAME_VALUE = 2048
+    }
+
+    interface IOnMoveFinished {
+        fun onMoveFinished(data: MoveFinishedDataHolder)
     }
 
     interface IOnGameScoreUpdates {
         fun onScoreUpdated(newScore: Int)
     }
-//
-//    interface IOnRandomSquareAdded {
-//        fun onSquareAdded(coordinate: Coordinate, value: Int)
-//    }
 
     interface IOnBestScoreUpdated {
         fun onBestScoreUpdated(newBestScore: Int)
     }
 
-    interface IOnSquareMovedListener {
-        fun onSquareMoved(move: SquareMovement)
-    }
-
-
-    private fun logBoard() {
+    fun logBoard() {
         val retVal = StringBuilder()
-        squares.forEachIndexed { row, line ->
-            line.forEachIndexed { col, num ->
-                retVal.append("$num ")
+        board.forEachIndexed { _, line ->
+            line.forEachIndexed { _, square ->
+                retVal.append("${square} ")
             }
             retVal.append('\n')
             Log.d(TAG, retVal.toString())
@@ -471,4 +529,39 @@ class GameEngine(
 
         Log.d(TAG, "==================")
     }
+
+    private fun logChanges(retVal: MoveFinishedDataHolder) {
+        Log.d(TAG, retVal.toString())
+        retVal.moves.forEach { move ->
+            Log.d(TAG, move.toString())
+        }
+    }
+
+
+    data class Square(var num: Int) {
+
+        override fun toString(): String {
+            return num.toString()
+        }
+
+        fun isNotEmpty(): Boolean {
+            return num != EMPTY_SQUARE
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as Square
+
+            if (num != other.num) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return num
+        }
+    }
+
 }

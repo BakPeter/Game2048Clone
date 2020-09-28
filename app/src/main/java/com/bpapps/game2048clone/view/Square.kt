@@ -32,4 +32,8 @@ class Square(context: Context, attrs: AttributeSet?) : AppCompatTextView(context
                 )
             }
         }
+
+    fun emptied() {
+        num = GameEngine.EMPTY_SQUARE
+    }
 }
