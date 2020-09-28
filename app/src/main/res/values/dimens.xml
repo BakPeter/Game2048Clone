@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="square_dimensions">80dp</dimen>
+    <dimen name="square_dimensions">76dp</dimen>
     <dimen name="square_padding">5dp</dimen>
     <dimen name="squareMargins">5dp</dimen>
     <dimen name="board_dimensions">360dp</dimen>

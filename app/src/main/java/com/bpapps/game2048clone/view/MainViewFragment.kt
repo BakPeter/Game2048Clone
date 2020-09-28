@@ -39,6 +39,8 @@ class MainViewFragment : Fragment(), View.OnTouchListener, MainViewViewModel.IOn
         activity?.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)?.let { sharedPref ->
             viewModel.bestScore = sharedPref.getInt(PREFERENCES_BEST_SCORE, 0)
         }
+
+        activity?.window?.decorView?.layoutDirection = View.LAYOUT_DIRECTION_LTR 
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
